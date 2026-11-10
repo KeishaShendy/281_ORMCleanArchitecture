@@ -25,9 +25,10 @@ async function getKomikById(req, res) {
 }
 
 async function createKomik(req, res) {
-    const { judul, description, author } = req.body;
+    // judul diganti menjadi title agar sesuai dengan model database
+    const { title, description, author } = req.body; 
     try {
-        const newKomik = await db.Komik.create({ judul, description, author });
+        const newKomik = await db.Komik.create({ title, description, author });
         res.status(201).json(newKomik);
     } catch (err) {
         console.error('Error creating komik:', err.message);
@@ -37,15 +38,19 @@ async function createKomik(req, res) {
 
 async function updateKomik(req, res) {
     const { id } = req.params;
-    const { judul, description, author } = req.body;
+    // judul diganti menjadi title
+    const { title, description, author } = req.body; 
     try {
         const komik = await db.Komik.findByPk(id);
         if (!komik) {
             return res.status(404).json({ error: 'Komik not found' });
         }
-        komik.judul = judul;
+        
+        // Update menggunakan properti title
+        komik.title = title; 
         komik.description = description;
         komik.author = author;
+        
         await komik.save();
         res.status(200).json(komik);
     } catch (err) {
